@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -32,11 +33,21 @@ public class SingleListAdapter extends ArrayAdapter<Product> {
             listItemView = LayoutInflater.from(getContext()).inflate(
                     R.layout.product_list, parent, false);
         }
-        Product currentProduct = getItem(position);
-
-        TextView productNameTextView = (TextView) listItemView.findViewById(R.id.product_text_view);
+        final Product currentProduct = getItem(position);
+        Log.i(LOG_TAG,currentProduct.getProductName() + "  --  " + position);
+        final TextView productNameTextView = (TextView) listItemView.findViewById(R.id.product_text_view);
 
         productNameTextView.setText(currentProduct.getProductName());
+
+        CheckBox checkBox = (CheckBox) listItemView.findViewById(R.id.product_checkbox);
+        checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                remove(currentProduct);
+            }
+        });
+
+
         Log.i("SingleListAdapter", "It's working?" + currentProduct);
 
         return listItemView;

@@ -2,6 +2,8 @@ package com.example.shoppinglist;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -34,5 +36,24 @@ public class MainActivity extends AppCompatActivity {
 
         listView.setAdapter(mAdapter);
 
+        Button add = (Button) findViewById(R.id.add_button);
+
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //EditText temp = (EditText) findViewById(R.id.product_edit_text);
+                //mAdapter.add(new Product(temp.getText().toString()));
+                //temp.setText("");
+                mProductList.remove(0);
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+
+    }
+
+    public Void removeProduct(int position){
+        mProductList.remove(position);
+        mAdapter.notifyDataSetChanged();
+        return null;
     }
 }

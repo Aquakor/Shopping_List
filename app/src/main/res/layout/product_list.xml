@@ -7,7 +7,7 @@
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/checkbox"/>
+        android:id="@+id/product_checkbox"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
