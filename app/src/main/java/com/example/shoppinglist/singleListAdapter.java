@@ -15,9 +15,6 @@ import com.example.shoppinglist.data.ProductDbHelper;
 
 import java.util.ArrayList;
 
-/**
- * Created by Kornel on 07.09.2016.
- */
 public class SingleListAdapter extends ArrayAdapter<Product> {
 
     /** Database helper for list of products */
@@ -41,10 +38,10 @@ public class SingleListAdapter extends ArrayAdapter<Product> {
                     R.layout.product_list, parent, false);
         }
         final Product currentProduct = getItem(position);
-        Log.i(LOG_TAG,currentProduct.getProductName() + "  --  " + position);
+        Log.i(LOG_TAG,currentProduct.mProduct + "  --  " + position);
         final TextView productNameTextView = (TextView) listItemView.findViewById(R.id.product_text_view);
 
-        productNameTextView.setText(currentProduct.getProductName());
+        productNameTextView.setText(currentProduct.mProduct);
 
         CheckBox checkBox = (CheckBox) listItemView.findViewById(R.id.product_checkbox);
         checkBox.setOnClickListener(new View.OnClickListener() {
@@ -52,7 +49,7 @@ public class SingleListAdapter extends ArrayAdapter<Product> {
             public void onClick(View view) {
                 SQLiteDatabase db = mDbHelper.getWritableDatabase();
                 Log.i(LOG_TAG,"Current position = " + position);
-                db.delete(ProductEntry.TABLE_NAME, ProductEntry.COLUMN_PRODUCT_NAME + " = \"" + currentProduct.getProductName() + "\"", null);
+                db.delete(ProductEntry.TABLE_NAME, ProductEntry.COLUMN_PRODUCT_NAME + " = \"" + currentProduct.mProduct + "\"", null);
                 remove(currentProduct);
 
             }

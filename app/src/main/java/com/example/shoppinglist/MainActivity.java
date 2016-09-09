@@ -20,36 +20,55 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    /** Database helper for list of products */
+    /**
+     * Database helper for list of products
+     */
     private ProductDbHelper mDbHelper = new ProductDbHelper(this);
 
-    /** Tag for log messages */
+    /**
+     * Tag for log messages
+     */
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
-    /** Adapter for the list of products */
+    /**
+     * Adapter for the list of products
+     */
     private SingleListAdapter mAdapter;
 
-    private AutoCompleteTextView autoCompleteTextView;
+    /**
+     * ArrayList for the product names
+     */
+    private ArrayList<Product> productArrayList;
 
+    private AutoCompleteTextView autoCompleteTextView;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.i(LOG_TAG, " -asd" + savedInstanceState);
+        if (savedInstanceState == null || savedInstanceState.containsKey("products")) {
+            productArrayList = new ArrayList<>();
+            mAdapter = new SingleListAdapter(this, productArrayList);
+            displayDatabaseInfo();
+        } else {
+            productArrayList = savedInstanceState.getParcelableArrayList("products");
+            Log.i(LOG_TAG, "Succesfully load info from onSaveInstance");
+        }
 
         // Get list of suggested product names for actv
         String[] products = getResources().getStringArray(R.array.products);
         autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.product_edit_text);
         ArrayAdapter<String> editTextAdapter = new ArrayAdapter<>(
-                this, android.R.layout.simple_list_item_1,products);
+                this, android.R.layout.simple_list_item_1, products);
         autoCompleteTextView.setAdapter(editTextAdapter);
 
 
         ListView listView = (ListView) findViewById(R.id.product_list_view);
 
         // Make new list for products
-        mAdapter = new SingleListAdapter(this, new ArrayList<Product>());
+        productArrayList = new ArrayList<>();
 
         listView.setAdapter(mAdapter);
 
@@ -65,9 +84,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // Get text from autoCompleteTextView
                 String temp = autoCompleteTextView.getText().toString();
-                if(temp.equals("")){
+                if (temp.equals("")) {
                     Toast.makeText(MainActivity.this, "Enter product name!", Toast.LENGTH_SHORT).show();
-                }else{
+                } else {
                     // Gets String from autoCompleteTextView and parse it into database
                     insertProduct(temp);
 
@@ -84,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void insertProduct(String nameOfProduct){
+    private void insertProduct(String nameOfProduct) {
         // Gets the data repository in write mode
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
@@ -95,10 +114,10 @@ public class MainActivity extends AppCompatActivity {
         // Insert the new row, returning the primary key value of the new row
         long newRowId = db.insert(ProductEntry.TABLE_NAME, null, values);
 
-        Log.i(LOG_TAG,"New row id: " + newRowId);
+        Log.i(LOG_TAG, "New row id: " + newRowId);
     }
 
-    private void displayDatabaseInfo(){
+    private void displayDatabaseInfo() {
         // Create and/or open a database to read from it
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
@@ -117,26 +136,29 @@ public class MainActivity extends AppCompatActivity {
                 null
         );
 
-        try{
+        try {
             // Figure out the index of each column
             int nameColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_NAME);
 
             // Iterate through all the returned rows in the cursor and attempt to add them
             // into mAdapter
-            while(cursor.moveToNext()){
+            while (cursor.moveToNext()) {
                 String currentName = cursor.getString(nameColumnIndex);
 
                 mAdapter.add(new Product(currentName));
             }
-        }finally {
+        } finally {
             cursor.close();
         }
 
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        displayDatabaseInfo();
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList("products", productArrayList);
+        Log.i(LOG_TAG, "SavedInstance = " + productArrayList);
+        super.onSaveInstanceState(outState);
     }
+
+
 }
