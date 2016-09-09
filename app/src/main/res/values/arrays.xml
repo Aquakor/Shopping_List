@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="products">
+        <item>"Mleko"</item>
+        <item>"Masło"</item>
+        <item>"Płatki"</item>
+        <item>"Orzeszki"</item>
+        <item>"Olej"</item>
+        <item>"Sól"</item>
+    </string-array>
+</resources>
