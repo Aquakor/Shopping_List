@@ -1,6 +1,7 @@
 package com.example.shoppinglist;
 
 import android.app.Activity;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,12 +10,18 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.example.shoppinglist.data.ProductContract.ProductEntry;
+import com.example.shoppinglist.data.ProductDbHelper;
+
 import java.util.ArrayList;
 
 /**
  * Created by Kornel on 07.09.2016.
  */
 public class SingleListAdapter extends ArrayAdapter<Product> {
+
+    /** Database helper for list of products */
+    private ProductDbHelper mDbHelper = new ProductDbHelper(getContext());
 
     /** Tag for log messages **/
     private static final String LOG_TAG = SingleListAdapter.class.getSimpleName();
@@ -27,7 +34,7 @@ public class SingleListAdapter extends ArrayAdapter<Product> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent){
+    public View getView(final int position, View convertView, ViewGroup parent){
         View listItemView = convertView;
         if (listItemView == null) {
             listItemView = LayoutInflater.from(getContext()).inflate(
@@ -43,12 +50,13 @@ public class SingleListAdapter extends ArrayAdapter<Product> {
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SQLiteDatabase db = mDbHelper.getWritableDatabase();
+                Log.i(LOG_TAG,"Current position = " + position);
+                db.delete(ProductEntry.TABLE_NAME, ProductEntry.COLUMN_PRODUCT_NAME + " = \"" + currentProduct.getProductName() + "\"", null);
                 remove(currentProduct);
+
             }
         });
-
-
-        Log.i("SingleListAdapter", "It's working?" + currentProduct);
 
         return listItemView;
     }
